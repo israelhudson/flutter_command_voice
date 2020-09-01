@@ -21,7 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  #flutter_tts_improved: ^1.0.3
+  swipe_gesture_recognizer: ^0.0.2
   google_speech: ^1.1.1
   flutter:
     sdk: flutter

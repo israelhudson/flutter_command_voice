@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:swipe_gesture_recognizer/swipe_gesture_recognizer.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,6 +31,8 @@ class _HomePageState extends State<HomePage> {
 
   String _textVoice = '---';
 
+  Color backgroundColor = Colors.teal;
+
   @override
   void initState() {
     super.initState();
@@ -43,8 +46,17 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _textVoice = call.arguments;
         });
+        condition(voiceSpeech: _textVoice);
       }
       return null;
+    });
+  }
+
+  void condition({String voiceSpeech}){
+    setState(() {
+      if(voiceSpeech.contains("branco")){
+        backgroundColor = Colors.white;
+      }
     });
   }
   
@@ -54,16 +66,24 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Texto de voz'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            RaisedButton(
-              child: Text('Texto da frase dita'),
-              onPressed: openSpeechRecognizer,
+      body: SwipeGestureRecognizer(
+        onSwipeLeft: () {
+          openSpeechRecognizer();
+        },
+        child: Container(
+          color: backgroundColor,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton(
+                  child: Text('Texto da frase dita'),
+                  onPressed: openSpeechRecognizer,
+                ),
+                Text("Texto dito: ${_textVoice}"),
+              ],
             ),
-            Text("Texto dito: ${_textVoice}"),
-          ],
+          ),
         ),
       ),
     );
