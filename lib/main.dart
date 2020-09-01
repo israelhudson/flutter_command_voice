@@ -27,14 +27,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const platform_invoke_recognizer = const MethodChannel('voice_invoke_recognizer');
   static const platform_voice_speech_text = const MethodChannel('voice_speech_text');
+  static const platform_listening_feedback = const MethodChannel('voice_listening_feedback');
 
   String _textVoice = '---';
+  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
 
     getVoiceText();
+
+    listeningFeedback();
+    
+  }
+
+  void listeningFeedback() {
+    platform_listening_feedback.setMethodCallHandler((call){
+      if(call.method == "voice_listening"){
+        setState(() {
+          _isListening = call.arguments.toString().contains("true");
+        });
+      }
+      return null;
+    });
   }
 
   void getVoiceText() {
@@ -54,10 +70,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Texto de voz'),
       ),
-      body: Center(
+      body: Container(
+        color: _isListening ? Colors.redAccent : Colors.white,
+        alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Text("$_isListening"),
             RaisedButton(
               child: Text('Texto da frase dita'),
               onPressed: openSpeechRecognizer,
